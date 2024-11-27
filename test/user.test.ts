@@ -172,3 +172,85 @@ describe("GET /api/users/current", () => {
     expect(body.error).toBeDefined();
   });
 });
+
+describe("PATCH /api/users/current", () => {
+  beforeEach(async () => {
+    await UserTest.create();
+  });
+  afterEach(async () => {
+    await UserTest.delete();
+  });
+
+  it("should be rejected if request is invalid", async () => {
+    const response = await app.request("/api/users/current", {
+      method: "patch",
+      headers: {
+        Authorization: "test",
+      },
+      body: JSON.stringify({
+        name: "",
+        password: "",
+      }),
+    });
+
+    expect(response.status).toBe(400);
+
+    // console.log(response);
+
+    const body = await response.json();
+    // console.log(body);
+    expect(body.error).toBeDefined();
+  });
+
+  it("should can update name only", async () => {
+    const response = await app.request("/api/users/current", {
+      method: "patch",
+      headers: {
+        Authorization: "test",
+      },
+      body: JSON.stringify({
+        name: "galih",
+      }),
+    });
+
+    expect(response.status).toBe(200);
+
+    const body = await response.json();
+    // logger.error(body);
+    // console.log(body);
+    expect(body.data).toBeDefined();
+    expect(body.data.name).toBe("galih");
+  });
+
+  it("should can update password only", async () => {
+    let response = await app.request("/api/users/current", {
+      method: "patch",
+      headers: {
+        Authorization: "test",
+      },
+      body: JSON.stringify({
+        password: "update",
+      }),
+    });
+
+    expect(response.status).toBe(200);
+
+    // console.log(response);
+
+    const body = await response.json();
+    // logger.error(body);
+    // console.log(body);
+    expect(body.data).toBeDefined();
+    expect(body.data.name).toBe("test");
+
+    response = await app.request("/api/users/login", {
+      method: "post",
+      body: JSON.stringify({
+        username: "test",
+        password: "update",
+      }),
+    });
+
+    expect(response.status).toBe(200);
+  });
+});
