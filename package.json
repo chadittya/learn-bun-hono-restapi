@@ -2,7 +2,9 @@
   "name": "belajar-bun-hono-restful-api",
   "scripts": {
     "dev": "bun run --hot src/index.ts",
-    "test": "bun test"
+    "test": "bun test",
+    "test:user": "bun test test/user.test.ts",
+    "test:contact": "bun test test/contact.test.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
